@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no">
+    <title>Sudoku Master - Brain Training Puzzle</title>
+    <meta name="description" content="Classic Sudoku puzzle game with multiple difficulty levels. Play offline anytime!">
+
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4a90d9" id="theme-color-meta">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <!-- iOS Support -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Sudoku">
+    <link rel="apple-touch-icon" href="icons/icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192x192.png">
+
+    <!-- Windows -->
+    <meta name="msapplication-TileImage" content="icons/icon-144x144.png">
+    <meta name="msapplication-TileColor" content="#4a90d9">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="icons/icon.svg">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Connection Status Banner -->
+        <div id="connection-banner" class="connection-banner hidden" role="alert" aria-live="polite">
+            <span class="connection-icon">📡</span>
+            <span class="connection-text">You are offline</span>
+        </div>
+
+        <!-- Update Banner -->
+        <div id="update-banner" class="update-banner hidden" role="alert">
+            <span>A new version is available!</span>
+            <button id="update-btn" class="btn-small">Update Now</button>
+        </div>
+
+        <!-- Header -->
+        <header class="app-header">
+            <div class="header-left">
+                <h1 class="app-title">
+                    <span class="logo-icon" aria-hidden="true">
+                        <svg viewBox="0 0 24 24" width="28" height="28">
+                            <rect x="1" y="1" width="22" height="22" rx="2" fill="none" stroke="currentColor" stroke-width="2"/>
+                            <line x1="8" y1="1" x2="8" y2="23" stroke="currentColor" stroke-width="1"/>
+                            <line x1="16" y1="1" x2="16" y2="23" stroke="currentColor" stroke-width="1"/>
+                            <line x1="1" y1="8" x2="23" y2="8" stroke="currentColor" stroke-width="1"/>
+                            <line x1="1" y1="16" x2="23" y2="16" stroke="currentColor" stroke-width="1"/>
+                        </svg>
+                    </span>
+                    Sudoku
+                </h1>
+            </div>
+            <div class="header-right">
+                <button id="stats-btn" class="icon-btn" aria-label="View statistics" title="Statistics">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 20V10M12 20V4M6 20v-6"/>
+                    </svg>
+                </button>
+                <button id="settings-btn" class="icon-btn" aria-label="Settings" title="Settings">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"/>
+                        <path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>
+                    </svg>
+                </button>
+                <button id="theme-toggle" class="icon-btn" aria-label="Toggle dark/light mode" title="Toggle theme">
+                    <svg class="sun-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="5"/>
+                        <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+                    </svg>
+                    <svg class="moon-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- Game Controls -->
+        <div class="game-controls">
+            <div class="control-row">
+                <div class="difficulty-group">
+                    <label for="difficulty" class="sr-only">Difficulty</label>
+                    <select id="difficulty" aria-label="Select difficulty">
+                        <option value="easy">Easy</option>
+                        <option value="medium" selected>Medium</option>
+                        <option value="hard">Hard</option>
+                    </select>
+                    <button id="new-game-btn" class="btn btn-primary">New Game</button>
+                </div>
+                <div class="timer-group">
+                    <div class="timer-display" aria-live="off">
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M12 6v6l4 2"/>
+                        </svg>
+                        <span id="timer">00:00</span>
+                    </div>
+                    <button id="pause-btn" class="icon-btn" aria-label="Pause game" title="Pause">
+                        <svg class="pause-icon" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <rect x="6" y="4" width="4" height="16"/>
+                            <rect x="14" y="4" width="4" height="16"/>
+                        </svg>
+                        <svg class="play-icon hidden" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                            <polygon points="5,3 19,12 5,21"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Game Area -->
+        <main class="game-main">
+            <!-- Sudoku Board -->
+            <div class="board-container">
+                <div id="board" class="board" role="grid" aria-label="Sudoku game board">
+                    <!-- Cells generated by JavaScript -->
+                </div>
+
+                <!-- Pause Overlay -->
+                <div id="pause-overlay" class="pause-overlay hidden" role="dialog" aria-label="Game paused">
+                    <div class="pause-content">
+                        <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M10 8v8M14 8v8"/>
+                        </svg>
+                        <h2>Game Paused</h2>
+                        <p>Your progress is saved</p>
+                        <button id="resume-btn" class="btn btn-primary">Resume</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hints Display -->
+            <div class="hints-display">
+                <button id="hint-btn" class="btn btn-hint" aria-label="Get a hint">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7z"/>
+                    </svg>
+                    <span>Hint</span>
+                    <span class="hint-count" id="hint-count">(3)</span>
+                </button>
+            </div>
+        </main>
+
+        <!-- Number Pad -->
+        <div class="number-pad" role="group" aria-label="Number input pad">
+            <button class="num-btn" data-num="1" aria-label="Enter 1">1</button>
+            <button class="num-btn" data-num="2" aria-label="Enter 2">2</button>
+            <button class="num-btn" data-num="3" aria-label="Enter 3">3</button>
+            <button class="num-btn" data-num="4" aria-label="Enter 4">4</button>
+            <button class="num-btn" data-num="5" aria-label="Enter 5">5</button>
+            <button class="num-btn" data-num="6" aria-label="Enter 6">6</button>
+            <button class="num-btn" data-num="7" aria-label="Enter 7">7</button>
+            <button class="num-btn" data-num="8" aria-label="Enter 8">8</button>
+            <button class="num-btn" data-num="9" aria-label="Enter 9">9</button>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button id="undo-btn" class="action-btn" aria-label="Undo" title="Undo (Ctrl+Z)">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M3 10h10a5 5 0 0 1 5 5v2M3 10l4-4M3 10l4 4"/>
+                </svg>
+                <span>Undo</span>
+            </button>
+            <button id="redo-btn" class="action-btn" aria-label="Redo" title="Redo (Ctrl+Y)">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 10H11a5 5 0 0 0-5 5v2M21 10l-4-4M21 10l-4 4"/>
+                </svg>
+                <span>Redo</span>
+            </button>
+            <button id="erase-btn" class="action-btn" aria-label="Erase" title="Erase (Backspace)">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 4H8l-7 8 7 8h13a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zM18 9l-6 6M12 9l6 6"/>
+                </svg>
+                <span>Erase</span>
+            </button>
+            <button id="notes-btn" class="action-btn" aria-label="Toggle notes mode" title="Notes (N)">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 20h9M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                </svg>
+                <span>Notes</span>
+            </button>
+        </div>
+
+        <!-- Footer Actions -->
+        <footer class="app-footer">
+            <button id="check-btn" class="btn" aria-label="Check solution">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 6L9 17l-5-5"/>
+                </svg>
+                Check
+            </button>
+            <button id="solve-btn" class="btn btn-danger" aria-label="Auto-solve puzzle">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/>
+                </svg>
+                Solve
+            </button>
+            <button id="install-btn" class="btn btn-install hidden" aria-label="Install app">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                Install
+            </button>
+        </footer>
+
+        <!-- Message Toast -->
+        <div id="toast" class="toast hidden" role="alert" aria-live="polite">
+            <span class="toast-icon"></span>
+            <span class="toast-message"></span>
+        </div>
+    </div>
+
+    <!-- Modals -->
+
+    <!-- New Game Confirmation Modal -->
+    <div id="new-game-modal" class="modal hidden" role="dialog" aria-labelledby="new-game-title" aria-modal="true">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <h2 id="new-game-title">Start New Game?</h2>
+            <p>Your current progress will be lost. Are you sure?</p>
+            <div class="modal-buttons">
+                <button id="confirm-new-game" class="btn btn-primary">New Game</button>
+                <button id="cancel-new-game" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Win Modal -->
+    <div id="win-modal" class="modal hidden" role="dialog" aria-labelledby="win-title" aria-modal="true">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content win-content">
+            <div class="confetti" aria-hidden="true"></div>
+            <h2 id="win-title">🎉 Congratulations!</h2>
+            <p class="win-message">You solved the puzzle!</p>
+            <div class="win-stats">
+                <div class="win-stat">
+                    <span class="stat-label">Time</span>
+                    <span class="stat-value" id="win-time">00:00</span>
+                </div>
+                <div class="win-stat">
+                    <span class="stat-label">Difficulty</span>
+                    <span class="stat-value" id="win-difficulty">Medium</span>
+                </div>
+                <div class="win-stat">
+                    <span class="stat-label">Hints Used</span>
+                    <span class="stat-value" id="win-hints">0</span>
+                </div>
+            </div>
+            <div class="modal-buttons">
+                <button id="play-again-btn" class="btn btn-primary">Play Again</button>
+                <button id="share-btn" class="btn">Share Result</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Solve Confirmation Modal -->
+    <div id="solve-modal" class="modal hidden" role="dialog" aria-labelledby="solve-title" aria-modal="true">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content">
+            <h2 id="solve-title">Auto-Solve Puzzle?</h2>
+            <p>This will reveal the complete solution. This game won't count towards your statistics.</p>
+            <div class="modal-buttons">
+                <button id="confirm-solve" class="btn btn-danger">Yes, Solve It</button>
+                <button id="cancel-solve" class="btn">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Statistics Modal -->
+    <div id="stats-modal" class="modal hidden" role="dialog" aria-labelledby="stats-title" aria-modal="true">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content stats-content">
+            <button class="modal-close" aria-label="Close">&times;</button>
+            <h2 id="stats-title">📊 Statistics</h2>
+            <div class="stats-grid">
+                <div class="stats-section">
+                    <h3>Easy</h3>
+                    <div class="stat-row">
+                        <span>Games Played</span>
+                        <span id="stat-easy-played">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Games Won</span>
+                        <span id="stat-easy-won">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Best Time</span>
+                        <span id="stat-easy-best">--:--</span>
+                    </div>
+                </div>
+                <div class="stats-section">
+                    <h3>Medium</h3>
+                    <div class="stat-row">
+                        <span>Games Played</span>
+                        <span id="stat-medium-played">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Games Won</span>
+                        <span id="stat-medium-won">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Best Time</span>
+                        <span id="stat-medium-best">--:--</span>
+                    </div>
+                </div>
+                <div class="stats-section">
+                    <h3>Hard</h3>
+                    <div class="stat-row">
+                        <span>Games Played</span>
+                        <span id="stat-hard-played">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Games Won</span>
+                        <span id="stat-hard-won">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span>Best Time</span>
+                        <span id="stat-hard-best">--:--</span>
+                    </div>
+                </div>
+            </div>
+            <div class="stats-overall">
+                <div class="stat-item">
+                    <span class="stat-number" id="stat-streak">0</span>
+                    <span class="stat-label">Current Streak</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="stat-best-streak">0</span>
+                    <span class="stat-label">Best Streak</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-number" id="stat-total-time">0h</span>
+                    <span class="stat-label">Total Time</span>
+                </div>
+            </div>
+            <button id="reset-stats-btn" class="btn btn-small btn-danger">Reset Statistics</button>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="modal hidden" role="dialog" aria-labelledby="settings-title" aria-modal="true">
+        <div class="modal-backdrop"></div>
+        <div class="modal-content settings-content">
+            <button class="modal-close" aria-label="Close">&times;</button>
+            <h2 id="settings-title">⚙️ Settings</h2>
+            <div class="settings-list">
+                <label class="setting-item">
+                    <span class="setting-label">Highlight Errors</span>
+                    <input type="checkbox" id="setting-errors" checked>
+                    <span class="toggle-switch"></span>
+                </label>
+                <label class="setting-item">
+                    <span class="setting-label">Highlight Related Cells</span>
+                    <input type="checkbox" id="setting-related" checked>
+                    <span class="toggle-switch"></span>
+                </label>
+                <label class="setting-item">
+                    <span class="setting-label">Highlight Same Numbers</span>
+                    <input type="checkbox" id="setting-same" checked>
+                    <span class="toggle-switch"></span>
+                </label>
+                <label class="setting-item">
+                    <span class="setting-label">Sound Effects</span>
+                    <input type="checkbox" id="setting-sound" checked>
+                    <span class="toggle-switch"></span>
+                </label>
+                <label class="setting-item">
+                    <span class="setting-label">Vibration Feedback</span>
+                    <input type="checkbox" id="setting-vibration" checked>
+                    <span class="toggle-switch"></span>
+                </label>
+                <label class="setting-item">
+                    <span class="setting-label">Auto-remove Notes</span>
+                    <input type="checkbox" id="setting-auto-notes" checked>
+                    <span class="toggle-switch"></span>
+                </label>
+            </div>
+            <div class="settings-footer">
+                <p class="version-info">Sudoku Master v1.0.0</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

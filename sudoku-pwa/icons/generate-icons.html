@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generate PWA Icons</title>
+    <style>
+        body {
+            font-family: system-ui, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+        }
+        .info {
+            background: #e3f2fd;
+            padding: 16px;
+            border-radius: 8px;
+            margin-bottom: 24px;
+        }
+        button {
+            background: #4a90d9;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 8px 8px 8px 0;
+        }
+        button:hover {
+            background: #357abd;
+        }
+        .preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 24px;
+        }
+        .icon-preview {
+            text-align: center;
+            background: white;
+            padding: 16px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .icon-preview img {
+            display: block;
+            margin: 0 auto 8px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+        .icon-preview span {
+            font-size: 14px;
+            color: #666;
+        }
+        #status {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+        }
+        #status.success {
+            display: block;
+            background: #c8e6c9;
+            color: #2e7d32;
+        }
+        #status.error {
+            display: block;
+            background: #ffcdd2;
+            color: #c62828;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎨 PWA Icon Generator</h1>
+
+    <div class="info">
+        <p><strong>Instructions:</strong></p>
+        <ol>
+            <li>Click "Generate All Icons" to create PNG icons from the SVG</li>
+            <li>Click "Download All" to save all icons to your downloads folder</li>
+            <li>Move the downloaded PNG files to this <code>icons</code> folder</li>
+        </ol>
+    </div>
+
+    <button onclick="generateAllIcons()">Generate All Icons</button>
+    <button onclick="downloadAllIcons()" id="downloadBtn" disabled>Download All Icons</button>
+
+    <div id="status"></div>
+
+    <div class="preview" id="preview"></div>
+
+    <script>
+        const SIZES = [72, 96, 128, 144, 152, 192, 384, 512];
+        const generatedIcons = {};
+
+        // SVG content
+        const svgContent = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a90d9"/>
+      <stop offset="100%" style="stop-color:#357abd"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <rect x="56" y="56" width="400" height="400" rx="20" fill="white" opacity="0.95"/>
+  <g stroke="#4a90d9" stroke-width="6" fill="none">
+    <line x1="189.33" y1="56" x2="189.33" y2="456"/>
+    <line x1="322.67" y1="56" x2="322.67" y2="456"/>
+    <line x1="56" y1="189.33" x2="456" y2="189.33"/>
+    <line x1="56" y1="322.67" x2="456" y2="322.67"/>
+  </g>
+  <g stroke="#cbd5e1" stroke-width="2" fill="none">
+    <line x1="100.44" y1="56" x2="100.44" y2="456"/>
+    <line x1="144.89" y1="56" x2="144.89" y2="456"/>
+    <line x1="233.78" y1="56" x2="233.78" y2="456"/>
+    <line x1="278.22" y1="56" x2="278.22" y2="456"/>
+    <line x1="367.11" y1="56" x2="367.11" y2="456"/>
+    <line x1="411.56" y1="56" x2="411.56" y2="456"/>
+    <line x1="56" y1="100.44" x2="456" y2="100.44"/>
+    <line x1="56" y1="144.89" x2="456" y2="144.89"/>
+    <line x1="56" y1="233.78" x2="456" y2="233.78"/>
+    <line x1="56" y1="278.22" x2="456" y2="278.22"/>
+    <line x1="56" y1="367.11" x2="456" y2="367.11"/>
+    <line x1="56" y1="411.56" x2="456" y2="411.56"/>
+  </g>
+  <g font-family="system-ui, -apple-system, sans-serif" font-weight="700" text-anchor="middle" dominant-baseline="central">
+    <text x="78" y="78" font-size="32" fill="#1e293b">5</text>
+    <text x="167" y="78" font-size="32" fill="#4a90d9">3</text>
+    <text x="256" y="78" font-size="32" fill="#1e293b">7</text>
+    <text x="122" y="122" font-size="32" fill="#4a90d9">6</text>
+    <text x="256" y="122" font-size="32" fill="#1e293b">1</text>
+    <text x="345" y="122" font-size="32" fill="#1e293b">9</text>
+    <text x="434" y="122" font-size="32" fill="#4a90d9">5</text>
+    <text x="122" y="167" font-size="32" fill="#1e293b">9</text>
+    <text x="167" y="167" font-size="32" fill="#1e293b">8</text>
+    <text x="390" y="167" font-size="32" fill="#1e293b">6</text>
+    <text x="78" y="211" font-size="32" fill="#1e293b">8</text>
+    <text x="211" y="211" font-size="32" fill="#4a90d9">6</text>
+    <text x="390" y="211" font-size="32" fill="#1e293b">3</text>
+    <text x="78" y="256" font-size="32" fill="#1e293b">4</text>
+    <text x="167" y="256" font-size="32" fill="#4a90d9">8</text>
+    <text x="256" y="256" font-size="32" fill="#1e293b">3</text>
+    <text x="345" y="256" font-size="32" fill="#1e293b">1</text>
+    <text x="434" y="256" font-size="32" fill="#4a90d9">6</text>
+    <text x="122" y="300" font-size="32" fill="#1e293b">2</text>
+    <text x="300" y="300" font-size="32" fill="#4a90d9">8</text>
+    <text x="434" y="300" font-size="32" fill="#1e293b">4</text>
+    <text x="122" y="345" font-size="32" fill="#4a90d9">7</text>
+    <text x="345" y="345" font-size="32" fill="#1e293b">2</text>
+    <text x="390" y="345" font-size="32" fill="#1e293b">6</text>
+    <text x="78" y="390" font-size="32" fill="#1e293b">6</text>
+    <text x="167" y="390" font-size="32" fill="#1e293b">2</text>
+    <text x="256" y="390" font-size="32" fill="#4a90d9">8</text>
+    <text x="390" y="390" font-size="32" fill="#1e293b">4</text>
+    <text x="434" y="390" font-size="32" fill="#1e293b">1</text>
+    <text x="256" y="434" font-size="32" fill="#1e293b">4</text>
+    <text x="345" y="434" font-size="32" fill="#4a90d9">9</text>
+    <text x="434" y="434" font-size="32" fill="#1e293b">8</text>
+  </g>
+</svg>`;
+
+        function showStatus(message, type) {
+            const status = document.getElementById('status');
+            status.textContent = message;
+            status.className = type;
+        }
+
+        async function generateIcon(size) {
+            return new Promise((resolve, reject) => {
+                const canvas = document.createElement('canvas');
+                canvas.width = size;
+                canvas.height = size;
+                const ctx = canvas.getContext('2d');
+
+                const img = new Image();
+                const svgBlob = new Blob([svgContent], { type: 'image/svg+xml;charset=utf-8' });
+                const url = URL.createObjectURL(svgBlob);
+
+                img.onload = () => {
+                    ctx.drawImage(img, 0, 0, size, size);
+                    URL.revokeObjectURL(url);
+                    canvas.toBlob((blob) => {
+                        resolve(blob);
+                    }, 'image/png');
+                };
+
+                img.onerror = () => {
+                    URL.revokeObjectURL(url);
+                    reject(new Error(`Failed to generate ${size}x${size} icon`));
+                };
+
+                img.src = url;
+            });
+        }
+
+        async function generateAllIcons() {
+            const preview = document.getElementById('preview');
+            preview.innerHTML = '';
+
+            try {
+                for (const size of SIZES) {
+                    const blob = await generateIcon(size);
+                    generatedIcons[size] = blob;
+
+                    // Create preview
+                    const div = document.createElement('div');
+                    div.className = 'icon-preview';
+
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(blob);
+                    img.width = Math.min(size, 128);
+                    img.height = Math.min(size, 128);
+
+                    const span = document.createElement('span');
+                    span.textContent = `${size}x${size}`;
+
+                    div.appendChild(img);
+                    div.appendChild(span);
+                    preview.appendChild(div);
+                }
+
+                document.getElementById('downloadBtn').disabled = false;
+                showStatus('✓ All icons generated successfully!', 'success');
+            } catch (error) {
+                showStatus('✗ Error: ' + error.message, 'error');
+            }
+        }
+
+        async function downloadAllIcons() {
+            for (const size of SIZES) {
+                const blob = generatedIcons[size];
+                if (blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = `icon-${size}x${size}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    // Small delay between downloads
+                    await new Promise(r => setTimeout(r, 200));
+                }
+            }
+
+            showStatus('✓ All icons downloaded! Move them to the icons folder.', 'success');
+        }
+    </script>
+</body>
+</html>

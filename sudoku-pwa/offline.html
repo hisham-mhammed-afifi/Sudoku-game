@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline - Sudoku Master</title>
+    <style>
+        :root {
+            --bg-color: #f8fafc;
+            --text-color: #1e293b;
+            --text-secondary: #64748b;
+            --primary-color: #4a90d9;
+            --card-bg: #ffffff;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --bg-color: #0f172a;
+                --text-color: #f1f5f9;
+                --text-secondary: #94a3b8;
+                --primary-color: #60a5fa;
+                --card-bg: #1e293b;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 400px;
+        }
+
+        .icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            color: var(--primary-color);
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 32px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .timer {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--bg-color);
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .timer svg {
+            width: 20px;
+            height: 20px;
+            animation: spin 2s linear infinite;
+        }
+
+        @keyframes spin {
+            100% { transform: rotate(360deg); }
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+            margin-top: 16px;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn:active {
+            transform: scale(0.98);
+        }
+
+        .btn svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .suggestions {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid var(--text-secondary);
+            opacity: 0.7;
+        }
+
+        .suggestions h2 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+        }
+
+        .suggestions ul {
+            list-style: none;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .suggestions li {
+            margin-bottom: 6px;
+        }
+
+        .suggestions li::before {
+            content: "• ";
+            color: var(--primary-color);
+        }
+
+        .home-link {
+            display: block;
+            margin-top: 20px;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .home-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M2 12C2 6.48 6.48 2 12 2s10 4.48 10 10-4.48 10-10 10S2 17.52 2 12z"/>
+                <circle cx="12" cy="12" r="1"/>
+                <path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>
+            </svg>
+
+            <h1>You're Offline</h1>
+            <p>It looks like you've lost your internet connection.</p>
+            <p>Don't worry - your game progress is saved locally!</p>
+
+            <div class="timer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <path d="M12 6v6l4 2"/>
+                </svg>
+                <span>Retrying in <span id="countdown">5</span>s...</span>
+            </div>
+
+            <button class="btn" onclick="tryReconnect()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M1 4v6h6M23 20v-6h-6"/>
+                    <path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15"/>
+                </svg>
+                Try Again
+            </button>
+
+            <div class="suggestions">
+                <h2>Things to try:</h2>
+                <ul>
+                    <li>Check your WiFi or mobile data</li>
+                    <li>Move closer to your router</li>
+                    <li>Try airplane mode on/off</li>
+                    <li>Wait a moment and refresh</li>
+                </ul>
+            </div>
+
+            <a href="/" class="home-link">← Return to Sudoku</a>
+        </div>
+    </div>
+
+    <script>
+        let countdown = 5;
+        const countdownEl = document.getElementById('countdown');
+        let timer;
+
+        function startCountdown() {
+            countdown = 5;
+            countdownEl.textContent = countdown;
+
+            timer = setInterval(() => {
+                countdown--;
+                countdownEl.textContent = countdown;
+
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                    tryReconnect();
+                }
+            }, 1000);
+        }
+
+        function tryReconnect() {
+            clearInterval(timer);
+
+            // Check if we're back online
+            if (navigator.onLine) {
+                window.location.href = '/';
+                return;
+            }
+
+            // Try to fetch the main page
+            fetch('/', { cache: 'no-store' })
+                .then(response => {
+                    if (response.ok) {
+                        window.location.href = '/';
+                    } else {
+                        startCountdown();
+                    }
+                })
+                .catch(() => {
+                    startCountdown();
+                });
+        }
+
+        // Listen for online event
+        window.addEventListener('online', () => {
+            window.location.href = '/';
+        });
+
+        // Start auto-retry countdown
+        startCountdown();
+    </script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4a90d9"/>
+      <stop offset="100%" style="stop-color:#357abd"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+
+  <!-- Grid background -->
+  <rect x="56" y="56" width="400" height="400" rx="20" fill="white" opacity="0.95"/>
+
+  <!-- 3x3 grid lines (outer boxes) -->
+  <g stroke="#4a90d9" stroke-width="6" fill="none">
+    <!-- Vertical lines -->
+    <line x1="189.33" y1="56" x2="189.33" y2="456"/>
+    <line x1="322.67" y1="56" x2="322.67" y2="456"/>
+    <!-- Horizontal lines -->
+    <line x1="56" y1="189.33" x2="456" y2="189.33"/>
+    <line x1="56" y1="322.67" x2="456" y2="322.67"/>
+  </g>
+
+  <!-- Inner grid lines -->
+  <g stroke="#cbd5e1" stroke-width="2" fill="none">
+    <!-- Vertical -->
+    <line x1="100.44" y1="56" x2="100.44" y2="456"/>
+    <line x1="144.89" y1="56" x2="144.89" y2="456"/>
+    <line x1="233.78" y1="56" x2="233.78" y2="456"/>
+    <line x1="278.22" y1="56" x2="278.22" y2="456"/>
+    <line x1="367.11" y1="56" x2="367.11" y2="456"/>
+    <line x1="411.56" y1="56" x2="411.56" y2="456"/>
+    <!-- Horizontal -->
+    <line x1="56" y1="100.44" x2="456" y2="100.44"/>
+    <line x1="56" y1="144.89" x2="456" y2="144.89"/>
+    <line x1="56" y1="233.78" x2="456" y2="233.78"/>
+    <line x1="56" y1="278.22" x2="456" y2="278.22"/>
+    <line x1="56" y1="367.11" x2="456" y2="367.11"/>
+    <line x1="56" y1="411.56" x2="456" y2="411.56"/>
+  </g>
+
+  <!-- Sample numbers -->
+  <g font-family="system-ui, -apple-system, sans-serif" font-weight="700" text-anchor="middle" dominant-baseline="central">
+    <!-- Row 1 -->
+    <text x="78" y="78" font-size="32" fill="#1e293b">5</text>
+    <text x="167" y="78" font-size="32" fill="#4a90d9">3</text>
+    <text x="256" y="78" font-size="32" fill="#1e293b">7</text>
+
+    <!-- Row 2 -->
+    <text x="122" y="122" font-size="32" fill="#4a90d9">6</text>
+    <text x="256" y="122" font-size="32" fill="#1e293b">1</text>
+    <text x="345" y="122" font-size="32" fill="#1e293b">9</text>
+    <text x="434" y="122" font-size="32" fill="#4a90d9">5</text>
+
+    <!-- Row 3 -->
+    <text x="122" y="167" font-size="32" fill="#1e293b">9</text>
+    <text x="167" y="167" font-size="32" fill="#1e293b">8</text>
+    <text x="390" y="167" font-size="32" fill="#1e293b">6</text>
+
+    <!-- Row 4 -->
+    <text x="78" y="211" font-size="32" fill="#1e293b">8</text>
+    <text x="211" y="211" font-size="32" fill="#4a90d9">6</text>
+    <text x="390" y="211" font-size="32" fill="#1e293b">3</text>
+
+    <!-- Row 5 -->
+    <text x="78" y="256" font-size="32" fill="#1e293b">4</text>
+    <text x="167" y="256" font-size="32" fill="#4a90d9">8</text>
+    <text x="256" y="256" font-size="32" fill="#1e293b">3</text>
+    <text x="345" y="256" font-size="32" fill="#1e293b">1</text>
+    <text x="434" y="256" font-size="32" fill="#4a90d9">6</text>
+
+    <!-- Row 6 -->
+    <text x="122" y="300" font-size="32" fill="#1e293b">2</text>
+    <text x="300" y="300" font-size="32" fill="#4a90d9">8</text>
+    <text x="434" y="300" font-size="32" fill="#1e293b">4</text>
+
+    <!-- Row 7 -->
+    <text x="122" y="345" font-size="32" fill="#4a90d9">7</text>
+    <text x="345" y="345" font-size="32" fill="#1e293b">2</text>
+    <text x="390" y="345" font-size="32" fill="#1e293b">6</text>
+
+    <!-- Row 8 -->
+    <text x="78" y="390" font-size="32" fill="#1e293b">6</text>
+    <text x="167" y="390" font-size="32" fill="#1e293b">2</text>
+    <text x="256" y="390" font-size="32" fill="#4a90d9">8</text>
+    <text x="390" y="390" font-size="32" fill="#1e293b">4</text>
+    <text x="434" y="390" font-size="32" fill="#1e293b">1</text>
+
+    <!-- Row 9 -->
+    <text x="256" y="434" font-size="32" fill="#1e293b">4</text>
+    <text x="345" y="434" font-size="32" fill="#4a90d9">9</text>
+    <text x="434" y="434" font-size="32" fill="#1e293b">8</text>
+  </g>
+</svg>
